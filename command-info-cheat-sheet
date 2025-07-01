@@ -1,0 +1,25 @@
+
+
+sudo nmcli connection modify "Stormrage" ipv4.method auto \
+ipv4.route-metric 100 \
+connection.autoconnect yes
+
+
+sudo apt update && sudo apt upgrade -y
+sudo apt autoremove -y
+
+
+sudo nmcli connection modify "eth0-cluster" ipv4.method manual \
+ipv4.addresses 10.0.0.102/24 \
+ipv4.gateway "" \
+ipv4.dns "" \
+connection.autoconnect yes \
+ipv4.never-default yes \
+connection.autoconnect-priority 200
+
+sudo nmcli connection modify "eth0-cluster" ipv4.dns "10.0.0.100"
+sudo nmcli connection modify "eth0-cluster" ipv4.dns-search "cluster.local" # If you used domain=cluster.local in dnsmasq.conf
+
+
+sudo nmcli connection down "eth0-cluster"
+sudo nmcli connection up "eth0-cluster"
