@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-flask-app-deployment
+  labels:
+    app: my-flask-app
+spec:
+  replicas: 2 # Start with 2 replicas to test scaling and distribution
+  selector:
+    matchLabels:
+      app: my-flask-app
+  template:
+    metadata:
+      labels:
+        app: my-flask-app
+    spec:
+      containers:
+      - name: my-flask-app
+        image: your-dockerhub-username/my-python-app:latest # **CRUCIAL: Replace with your Docker Hub username**
+        ports:
+        - containerPort: 80 # The port your Flask app listens on inside the container
+        volumeMounts:
+        - name: app-persistent-storage
+          mountPath: /srv # This path must match the COUNTER_FILE's directory in app.py
+      volumes:
+      - name: app-persistent-storage
+        persistentVolumeClaim:
+          claimName: my-flask-app-pvc # Link to the PVC defined above
